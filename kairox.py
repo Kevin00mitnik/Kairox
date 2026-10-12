@@ -14,7 +14,7 @@ from core.engine import run_engine
 console = Console()
 
 TOOL_NAME = "KAIROX"
-AUTHOR = "Shadly Maliyekkal"
+AUTHOR = "Mohammed Arif Pallath (whitefox.infosec)"
 
 def clear():
     os.system("cls" if os.name == "nt" else "clear")
