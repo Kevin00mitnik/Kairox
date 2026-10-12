@@ -30,6 +30,8 @@ export PATH="$HOME/go/bin:$PATH"
 
 Power Lens discovers subdomains with Subfinder, probes live hosts with httpx, checks ports with nmap, finds archived URLs with gau, and checks TLS protocols and common vulnerabilities with testssl.sh. The TLS check targets HTTPS on port 443.
 
+Scan results are presented as a terminal dashboard with a target summary, key-count cards, and grouped findings. Long result lists are capped in the display with the total count shown; the underlying scans are unchanged.
+
 Do not run the application or installer as root. It installs command-line tools for the current user, and the default scans do not need root privileges.
 
 ## Troubleshooting
