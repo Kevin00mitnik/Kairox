@@ -1,4 +1,5 @@
 import asyncio
+
 from modules.subdomain import get_subdomains
 from modules.live import get_live
 from modules.ports import scan_ports
@@ -11,13 +12,23 @@ async def run_engine(domain):
     subs = await get_subdomains(domain)
     categories = classify(subs)
 
-    live_task = get_live(subs)
-    port_task = scan_ports(domain)
-    url_task = get_urls(domain)
-    tls_task = check_tls(domain)
-
-    live, ports, urls, tls = await asyncio.gather(
-        live_task, port_task, url_task, tls_task
+    results = await asyncio.gather(
+        get_live(subs),
+        scan_ports(domain),
+        get_urls(domain),
+        check_tls(domain),
+        return_exceptions=True,
     )
 
-    return categories, live, ports, urls, tls
+    names = ("Live-host check", "Port scan", "Archived-URL check", "TLS check")
+    outputs = []
+    errors = []
+    for name, result in zip(names, results):
+        if isinstance(result, Exception):
+            outputs.append([])
+            errors.append(f"{name}: {result}")
+        else:
+            outputs.append(result)
+
+    live, ports, urls, tls = outputs
+    return categories, live, ports, urls, tls, errors

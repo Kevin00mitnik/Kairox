@@ -54,7 +54,7 @@ def get_target():
         except ValueError as exc:
             console.print(f"[red]{exc}[/red]")
 
-def show(data, live, ports, urls, tls):
+def show(data, live, ports, urls, tls, errors):
     console.print(Rule("[bold cyan]Results[/bold cyan]"))
 
     def render(title, items, color):
@@ -70,6 +70,7 @@ def show(data, live, ports, urls, tls):
     render("Open Ports", ports, "green")
     render("Sensitive URLs", urls, "magenta")
     render("TLS / SSL Results", tls, "blue")
+    render("Checks with errors", errors, "red")
 
     console.print(Rule("[green]Completed[/green]"))
 
@@ -83,9 +84,13 @@ def main():
 
     target = get_target()
     console.print(f"[green]Target: {target}[/green]\n")
+    console.print(
+        "[cyan]Running live-host, port, archived-URL, and TLS checks. "
+        "This can take a few minutes...[/cyan]"
+    )
 
     try:
-        data, live, ports, urls, tls = asyncio.run(run_engine(target))
+        data, live, ports, urls, tls, errors = asyncio.run(run_engine(target))
     except (CommandError, RuntimeError, OSError) as exc:
         console.print(f"\n[red]{TOOL_NAME} could not complete the scan:[/red] {exc}")
         raise SystemExit(1) from exc
@@ -93,7 +98,7 @@ def main():
         console.print("\n[yellow]Scan cancelled.[/yellow]")
         raise SystemExit(130) from None
 
-    show(data, live, ports, urls, tls)
+    show(data, live, ports, urls, tls, errors)
 
 if __name__ == "__main__":
     main()

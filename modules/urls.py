@@ -2,7 +2,10 @@ from utils.runner import run_cmd
 
 
 async def get_urls(domain):
-    output = await run_cmd(["gau", domain])
+    output = await run_cmd(
+        ["gau", "--timeout", "15", "--retries", "1", "--threads", "5", domain],
+        timeout=120,
+    )
 
     sensitive = []
     for url in output.splitlines():
