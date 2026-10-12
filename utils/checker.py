@@ -38,7 +38,7 @@ def check_tools():
             )
         else:
             console.print(
-                "[yellow]From the Kairox project directory, run "
+                "[yellow]From the powerlens project directory, run "
                 "./install.sh as your normal user, then reopen your terminal.[/yellow]"
             )
         raise SystemExit(1)

@@ -24,7 +24,7 @@ class RunCommandTests(unittest.IsolatedAsyncioTestCase):
 
     async def test_reports_missing_executable(self):
         with self.assertRaisesRegex(CommandError, "was not found"):
-            await run_cmd(["kairox-command-that-does-not-exist"])
+            await run_cmd(["powerlens-command-that-does-not-exist"])
 
     async def test_reports_nonzero_exit_and_stderr(self):
         with self.assertRaisesRegex(CommandError, "test failure"):

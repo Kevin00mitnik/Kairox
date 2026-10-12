@@ -9,7 +9,7 @@ cd "$SCRIPT_DIR"
 
 if [[ $EUID -eq 0 ]]; then
     printf '[!] Do not run this installer as root or with sudo.\n' >&2
-    printf '    Run it as your normal Kali user: cd ~/Downloads/Kairox && ./install.sh\n' >&2
+    printf '    Run it as your normal Kali user from the powerlens project directory: ./install.sh\n' >&2
     printf '    The installer will request sudo only for system packages.\n' >&2
     exit 1
 fi
@@ -56,7 +56,7 @@ add_go_path_to_profile() {
         return
     fi
 
-    printf '\n# Kairox Go tools\n%s\n' "$path_line" >> "$profile"
+    printf '\n# Power Lens Go tools\n%s\n' "$path_line" >> "$profile"
 }
 
 add_go_path_to_profile "$HOME/.profile"
@@ -77,7 +77,7 @@ install_go_tool() {
     fi
 
     printf '[+] Installing %s with Go (this can take several minutes)...\n' "$name"
-    first_log="$(mktemp "${TMPDIR:-/tmp}/kairox-go-install.XXXXXX")"
+    first_log="$(mktemp "${TMPDIR:-/tmp}/powerlens-go-install.XXXXXX")"
     if go install -v "$package" 2>&1 | tee "$first_log"; then
         rm -f -- "$first_log"
         return
@@ -92,8 +92,8 @@ install_go_tool() {
     fi
 
     printf '[!] Go reported a damaged module download. Retrying %s with a fresh temporary module cache...\n' "$name" >&2
-    retry_cache="$(mktemp -d "${TMPDIR:-/tmp}/kairox-gomodcache.XXXXXX")"
-    retry_log="$(mktemp "${TMPDIR:-/tmp}/kairox-go-retry.XXXXXX")"
+    retry_cache="$(mktemp -d "${TMPDIR:-/tmp}/powerlens-gomodcache.XXXXXX")"
+    retry_log="$(mktemp "${TMPDIR:-/tmp}/powerlens-go-retry.XXXXXX")"
     if GOMODCACHE="$retry_cache" go install -v "$package" 2>&1 | tee "$retry_log"; then
         rm -f -- "$first_log" "$retry_log"
         rm -rf -- "$retry_cache"
@@ -132,5 +132,5 @@ if ((${#missing[@]})); then
 fi
 
 printf '\n[+] Setup completed successfully.\n'
-printf '[+] Start KAIROX with: %s\n' "$VENV_DIR/bin/python kairox.py"
+printf '[+] Start Power Lens with: %s\n' "$VENV_DIR/bin/python powerlens.py"
 printf '[+] Open a new terminal or run: export PATH="$HOME/go/bin:$PATH"\n'

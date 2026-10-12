@@ -15,7 +15,7 @@ from core.engine import run_engine
 
 console = Console()
 
-TOOL_NAME = "WHITEFOX"
+TOOL_NAME = "Power Lens"
 AUTHOR = "Mohammed Arif Pallath (whitefox.infosec)"
 
 def clear():
