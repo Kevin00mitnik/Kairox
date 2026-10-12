@@ -39,5 +39,6 @@ Do not run the application or installer as root. It installs command-line tools 
 - **A Go build reports truncated files or `expected 'package', found 'EOF'`:** the installer automatically retries that tool with a fresh temporary module cache. If it still fails, check the displayed Go error and rerun after fixing the underlying network or Go issue.
 - **The scan reports a command, timeout, or process error:** Power Lens prints the failing command and actionable next steps; confirm dependencies and connectivity, then retry.
 - **Archived URL lookup takes too long:** `gau` is limited to one retry, a 15-second per-request timeout, and a 120-second overall timeout. If it reaches that limit, other completed scan results are still shown and the URL lookup error is listed separately.
+- **Live-host checks take too long on large domains:** httpx checks at most 250 discovered hosts, with a 5-second request timeout, no retries, a 25-thread limit, and a 25-request-per-second rate limit. The overall check is capped at 120 seconds; when the discovered list is larger, Power Lens reports that only a subset was checked.
 
 Not every failure can be repaired automatically: unavailable mirrors, blocked networks, API rate limits, and upstream tool changes require resolving the underlying issue.

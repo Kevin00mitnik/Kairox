@@ -37,6 +37,25 @@ class RunEngineTests(unittest.IsolatedAsyncioTestCase):
         self.assertEqual(result[4], ["TLS 1.2 offered (OK)"])
         self.assertEqual(result[5], ["Archived-URL check: archive timed out"])
 
+    async def test_reports_when_live_host_probe_is_capped(self):
+        subs = [f"host-{index}.example.com" for index in range(251)]
+        with (
+            patch("core.engine.get_subdomains", new=AsyncMock(return_value=subs)),
+            patch("core.engine.get_live", new=AsyncMock(return_value=[])),
+            patch("core.engine.scan_ports", new=AsyncMock(return_value=[])),
+            patch("core.engine.get_urls", new=AsyncMock(return_value=[])),
+            patch("core.engine.check_tls", new=AsyncMock(return_value=[])),
+        ):
+            result = await run_engine("example.com")
+
+        self.assertEqual(
+            result[5],
+            [
+                "Live-host check: limited to the first 250 of 251 discovered hosts "
+                "to keep the probe bounded."
+            ],
+        )
+
 
 if __name__ == "__main__":
     unittest.main()

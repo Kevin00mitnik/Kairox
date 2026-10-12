@@ -1,13 +1,31 @@
 from utils.runner import run_cmd
 
 
+MAX_LIVE_HOSTS = 250
+
+
 async def get_live(subs):
     if not subs:
         return []
 
+    hosts = sorted(set(subs))[:MAX_LIVE_HOSTS]
     output = await run_cmd(
-        ["httpx", "-silent", "-status-code", "-title"],
-        input_text="\n".join(subs) + "\n",
+        [
+            "httpx",
+            "-silent",
+            "-status-code",
+            "-title",
+            "-timeout",
+            "5",
+            "-retries",
+            "0",
+            "-threads",
+            "25",
+            "-rate-limit",
+            "25",
+        ],
+        input_text="\n".join(hosts) + "\n",
+        timeout=120,
     )
 
     results = []

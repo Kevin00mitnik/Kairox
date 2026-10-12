@@ -1,7 +1,7 @@
 import asyncio
 
 from modules.subdomain import get_subdomains
-from modules.live import get_live
+from modules.live import MAX_LIVE_HOSTS, get_live
 from modules.ports import scan_ports
 from modules.urls import get_urls
 from modules.tls import check_tls
@@ -29,6 +29,14 @@ async def run_engine(domain):
             errors.append(f"{name}: {result}")
         else:
             outputs.append(result)
+
+    unique_subs_count = len(set(subs))
+    if unique_subs_count > MAX_LIVE_HOSTS:
+        errors.append(
+            "Live-host check: limited to the first "
+            f"{MAX_LIVE_HOSTS} of {unique_subs_count} discovered hosts "
+            "to keep the probe bounded."
+        )
 
     live, ports, urls, tls = outputs
     return categories, live, ports, urls, tls, errors
