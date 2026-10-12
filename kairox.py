@@ -54,7 +54,7 @@ def get_target():
         except ValueError as exc:
             console.print(f"[red]{exc}[/red]")
 
-def show(data, live, ports, urls):
+def show(data, live, ports, urls, tls):
     console.print(Rule("[bold cyan]Results[/bold cyan]"))
 
     def render(title, items, color):
@@ -69,6 +69,7 @@ def show(data, live, ports, urls):
     render("Live Hosts", [f"{l['url']} [{l['status']}]" for l in live], "cyan")
     render("Open Ports", ports, "green")
     render("Sensitive URLs", urls, "magenta")
+    render("TLS / SSL Results", tls, "blue")
 
     console.print(Rule("[green]Completed[/green]"))
 
@@ -84,7 +85,7 @@ def main():
     console.print(f"[green]Target: {target}[/green]\n")
 
     try:
-        data, live, ports, urls = asyncio.run(run_engine(target))
+        data, live, ports, urls, tls = asyncio.run(run_engine(target))
     except (CommandError, RuntimeError, OSError) as exc:
         console.print(f"\n[red]KAIROX could not complete the scan:[/red] {exc}")
         raise SystemExit(1) from exc
@@ -92,7 +93,7 @@ def main():
         console.print("\n[yellow]Scan cancelled.[/yellow]")
         raise SystemExit(130) from None
 
-    show(data, live, ports, urls)
+    show(data, live, ports, urls, tls)
 
 if __name__ == "__main__":
     main()

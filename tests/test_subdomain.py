@@ -5,30 +5,23 @@ from modules.subdomain import get_subdomains
 
 
 class GetSubdomainsTests(unittest.IsolatedAsyncioTestCase):
-    async def test_combines_sources_and_ignores_empty_lines(self):
+    async def test_returns_sorted_unique_subdomains_and_ignores_empty_lines(self):
         with patch(
             "modules.subdomain.run_cmd",
-            new=AsyncMock(
-                side_effect=[
-                    "www.example.com\n\napi.example.com\n",
-                    "api.example.com\nmail.example.com\n",
-                ]
-            ),
+            new=AsyncMock(return_value="www.example.com\n\napi.example.com\nwww.example.com\n"),
         ):
             results = await get_subdomains("example.com")
 
-        self.assertCountEqual(
-            results,
-            ["www.example.com", "api.example.com", "mail.example.com"],
-        )
+        self.assertEqual(results, ["api.example.com", "www.example.com"])
 
-    async def test_fails_when_both_sources_fail(self):
+    async def test_uses_subfinder_for_subdomain_discovery(self):
         with patch(
             "modules.subdomain.run_cmd",
-            new=AsyncMock(side_effect=RuntimeError("tool unavailable")),
-        ):
-            with self.assertRaisesRegex(RuntimeError, "Subdomain discovery failed"):
-                await get_subdomains("example.com")
+            new=AsyncMock(return_value="www.example.com\n"),
+        ) as run_cmd:
+            await get_subdomains("example.com")
+
+        run_cmd.assert_awaited_once_with(["subfinder", "-silent", "-d", "example.com"])
 
 
 if __name__ == "__main__":

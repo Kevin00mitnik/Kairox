@@ -13,7 +13,7 @@ chmod +x install.sh
 ./install.sh
 ```
 
-The installer uses `sudo` only for system packages. It creates the Python virtual environment, installs the Go-based tools into your user's `~/go/bin`, adds that directory to common shell profiles, and verifies the required commands. If Go reports damaged cached downloads, the installer retries that tool with a fresh temporary module cache and prints an error if the retry fails. You can safely rerun the installer after fixing a reported network or package-manager problem.
+The installer uses `sudo` only for system packages. It creates the Python virtual environment, installs the Go-based tools into your user's `~/go/bin`, installs `testssl.sh` from Kali's package repository, and verifies the required commands. If Go reports damaged cached downloads, the installer retries that tool with a fresh temporary module cache and prints an error if the retry fails. You can safely rerun the installer after fixing a reported network or package-manager problem.
 
 Start KAIROX with:
 
@@ -28,7 +28,9 @@ If the Go commands are not found in the current terminal after setup, open a new
 export PATH="$HOME/go/bin:$PATH"
 ```
 
-Do not run the application or installer as root. It installs command-line tools for the current user, and scanning tools do not need root for the default operations.
+KAIROX discovers subdomains with Subfinder, probes live hosts with httpx, checks ports with nmap, finds archived URLs with gau, and checks TLS protocols and common vulnerabilities with testssl.sh. The TLS check targets HTTPS on port 443.
+
+Do not run the application or installer as root. It installs command-line tools for the current user, and the default scans do not need root privileges.
 
 ## Troubleshooting
 

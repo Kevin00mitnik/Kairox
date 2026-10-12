@@ -26,7 +26,7 @@ fi
 
 printf '[+] Installing system dependencies...\n'
 sudo apt-get update
-sudo apt-get install -y git curl wget python3 python3-pip python3-venv nmap golang-go
+sudo apt-get install -y git curl wget python3 python3-pip python3-venv nmap golang-go testssl.sh
 
 if ! command -v python3 >/dev/null 2>&1 || ! command -v go >/dev/null 2>&1; then
     printf '[!] Python 3 and Go must be available after installing system dependencies.\n' >&2
@@ -113,11 +113,10 @@ printf '[+] Installing command-line tools for your user...\n'
 install_go_tool subfinder github.com/projectdiscovery/subfinder/v2/cmd/subfinder@latest
 install_go_tool httpx github.com/projectdiscovery/httpx/cmd/httpx@latest
 install_go_tool gau github.com/lc/gau/v2/cmd/gau@latest
-install_go_tool amass github.com/owasp-amass/amass/v5/cmd/amass@latest
 
 printf '\n[+] Verifying required tools...\n'
 missing=()
-for tool in subfinder amass httpx gau nmap; do
+for tool in subfinder httpx gau nmap testssl; do
     if command -v "$tool" >/dev/null 2>&1; then
         printf '[+] %s: %s\n' "$tool" "$(command -v "$tool")"
     else

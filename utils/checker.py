@@ -13,7 +13,7 @@ def check_tools():
         [str(go_bin), os.environ.get("PATH", "")]
     )
 
-    tools = ["subfinder", "amass", "httpx", "gau", "nmap"]
+    tools = ["subfinder", "httpx", "gau", "nmap", "testssl"]
     console.print("\n[cyan]Checking dependencies...[/cyan]\n")
 
     missing = []
