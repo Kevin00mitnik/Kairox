@@ -1,7 +1,8 @@
 from utils.runner import run_cmd
 
+
 async def get_urls(domain):
-    output = await run_cmd(f"gau {domain}")
+    output = await run_cmd(["gau", domain])
 
     sensitive = []
     for url in output.splitlines():

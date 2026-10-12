@@ -9,6 +9,8 @@ from rich.table import Table
 from rich.rule import Rule
 
 from utils.checker import check_tools
+from utils.runner import CommandError
+from utils.validation import normalize_domain
 from core.engine import run_engine
 
 console = Console()
@@ -45,10 +47,12 @@ def confirm():
             console.print("[red]Invalid input[/red]")
 
 def get_target():
-    t = Prompt.ask("[cyan]Enter target domain[/cyan]")
-    if not t.strip():
-        sys.exit()
-    return t.strip()
+    while True:
+        target = Prompt.ask("[cyan]Enter target domain[/cyan]")
+        try:
+            return normalize_domain(target)
+        except ValueError as exc:
+            console.print(f"[red]{exc}[/red]")
 
 def show(data, live, ports, urls):
     console.print(Rule("[bold cyan]Results[/bold cyan]"))
@@ -79,7 +83,15 @@ def main():
     target = get_target()
     console.print(f"[green]Target: {target}[/green]\n")
 
-    data, live, ports, urls = asyncio.run(run_engine(target))
+    try:
+        data, live, ports, urls = asyncio.run(run_engine(target))
+    except (CommandError, RuntimeError, OSError) as exc:
+        console.print(f"\n[red]KAIROX could not complete the scan:[/red] {exc}")
+        raise SystemExit(1) from exc
+    except KeyboardInterrupt:
+        console.print("\n[yellow]Scan cancelled.[/yellow]")
+        raise SystemExit(130) from None
+
     show(data, live, ports, urls)
 
 if __name__ == "__main__":
