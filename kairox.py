@@ -15,7 +15,7 @@ from core.engine import run_engine
 
 console = Console()
 
-TOOL_NAME = "KAIROX"
+TOOL_NAME = "WHITEFOX"
 AUTHOR = "Mohammed Arif Pallath (whitefox.infosec)"
 
 def clear():
@@ -87,7 +87,7 @@ def main():
     try:
         data, live, ports, urls, tls = asyncio.run(run_engine(target))
     except (CommandError, RuntimeError, OSError) as exc:
-        console.print(f"\n[red]KAIROX could not complete the scan:[/red] {exc}")
+        console.print(f"\n[red]{TOOL_NAME} could not complete the scan:[/red] {exc}")
         raise SystemExit(1) from exc
     except KeyboardInterrupt:
         console.print("\n[yellow]Scan cancelled.[/yellow]")
